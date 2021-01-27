@@ -7,7 +7,11 @@ const [OFF, ERROR] = ['off', 'error'];
 
 const config = {
   extends: [
-    options.hasTypescript ? 'airbnb-typescript' : options.hasReact ? 'airbnb' : 'airbnb-base',
+    options.hasTypescript
+      ? 'airbnb-typescript'
+      : options.hasReact
+      ? 'airbnb'
+      : 'airbnb-base',
     options.hasReact && 'plugin:react-hooks/recommended',
     options.hasTestingLibrary && 'testing-library/recommended',
     options.hasTestingLibrary && options.hasReact && 'testing-library/react',
@@ -43,7 +47,9 @@ const config = {
     ecmaVersion: 2018,
     sourceType: 'module',
     ...(options.hasTypescript && {
-      project: existsSync('tsconfig.eslint.json') ? './tsconfig.eslint.json' : './tsconfig.json',
+      project: existsSync('tsconfig.eslint.json')
+        ? './tsconfig.eslint.json'
+        : './tsconfig.json',
     }),
     ecmaFeatures: {
       jsx: options.hasReact,
@@ -88,7 +94,13 @@ const config = {
       ERROR,
       {
         'newlines-between': 'always',
-        groups: [['external', 'builtin'], 'internal', 'parent', ['index', 'sibling'], 'object'],
+        groups: [
+          ['external', 'builtin'],
+          'internal',
+          'parent',
+          ['index', 'sibling'],
+          'object',
+        ],
         alphabetize: {
           order: 'asc',
           caseInsensitive: true,
