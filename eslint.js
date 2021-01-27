@@ -1,10 +1,7 @@
 const { existsSync, fstat } = require('fs');
 const { join, ...p } = require('path');
-const readPkgUp = require('read-pkg-up');
 
 const options = require('./eslint-env');
-
-console.log('options', options);
 
 const [OFF, ERROR] = ['off', 'error'];
 
