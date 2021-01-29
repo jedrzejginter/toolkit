@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`one 1`] = `
+"function a() {
+  const b = 1;
+  return b;
+}
+
+"
+`;

@@ -8,7 +8,9 @@ const [OFF, ERROR] = ['off', 'error'];
 const config = {
   extends: [
     options.hasTypescript
-      ? 'airbnb-typescript'
+      ? options.hasReact
+        ? 'airbnb-typescript'
+        : 'airbnb-typescript/base'
       : options.hasReact
       ? 'airbnb'
       : 'airbnb-base',

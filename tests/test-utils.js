@@ -2,10 +2,8 @@ const { ESLint } = require('eslint');
 
 const eslint = new ESLint();
 
-(async () => {
-  const conf = await eslint.calculateConfigForFile('index.ts');
-
-  // console.log('conf', JSON.stringify(conf.rules, null, 2));
+module.exports = async (file) => {
+  const conf = await eslint.calculateConfigForFile(file);
 
   const e = Object.entries(conf.rules);
 
@@ -15,5 +13,5 @@ const eslint = new ESLint();
 
   const f = e.map(([k, v]) => `${k}: ${c(v[0])}`).sort();
 
-  console.log(f);
-})();
+  return f;
+};
