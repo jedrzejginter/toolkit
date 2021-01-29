@@ -1,11 +1,13 @@
 {
-  "name": "toolkit",
-  "version": "0.0.0",
+  "name": "@ginterdev/toolkit",
+  "version": "0.1.0-rc1",
   "description": "Tools that I use in personal or company projects",
   "license": "MIT",
   "repository": "jedrzejginter/toolkit",
   "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
+  "bin": "./cli.js",
   "scripts": {
+    "publish-rc": "npm publish --tag next",
     "test": "jest"
   },
   "dependencies": {
