@@ -1,5 +1,5 @@
-const { existsSync, fstat } = require('fs');
-const { join, ...p } = require('path');
+const { existsSync } = require('fs');
+const { join } = require('path');
 
 const options = require('./eslint-env');
 
@@ -62,7 +62,6 @@ const config = {
     ...(options.hasReact && {
       'jsx-a11y/anchor-is-valid': OFF,
       'jsx-a11y/click-events-have-key-events': OFF,
-      'jsx-a11y/label-has-associated-control': OFF,
       'jsx-a11y/no-noninteractive-element-interactions': OFF,
       'jsx-a11y/no-noninteractive-tabindex': OFF,
       'jsx-a11y/no-static-element-interactions': OFF,

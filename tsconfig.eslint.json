@@ -3,5 +3,5 @@
     "allowJs": true
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", ".*.js"]
 }

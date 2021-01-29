@@ -1,5 +1,4 @@
 const { existsSync } = require('fs');
-const { join, ...p } = require('path');
 const readPkgUp = require('read-pkg-up');
 
 const { packageJson } = readPkgUp.sync({ normalize: true });
