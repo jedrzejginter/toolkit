@@ -1,7 +1,7 @@
 const { existsSync } = require('fs');
 const { join } = require('path');
 
-const options = require('./env');
+const options = require('./options');
 
 const [OFF, ERROR] = ['off', 'error'];
 

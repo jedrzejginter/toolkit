@@ -1,1 +1,1 @@
-module.exports = require('IMPORT_SOURCE');
+module.exports = require('__IMPORT_SOURCE__');
