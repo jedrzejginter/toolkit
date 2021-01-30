@@ -25,6 +25,7 @@
     "npmrc",
     "nvmrc",
     "prettier.js",
+    "scripts",
     "tailwind*"
   ],
   "dependencies": {
