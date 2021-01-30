@@ -1,0 +1,20 @@
+# ignore all runtime configuration files but not npm one
+.*rc*
+!.npmrc
+
+# let's not copy entire git history
+.git
+
+# those are useless
+.cache
+.git*
+*.md
+dist
+tsconfig.eslint.json
+
+# we install modules in the container
+node_modules
+
+# useless env files
+.env.development
+.env.test

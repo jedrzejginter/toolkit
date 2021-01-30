@@ -1,7 +1,7 @@
 const { existsSync } = require('fs');
 const { join } = require('path');
 
-const options = require('./eslint-env');
+const options = require('./env');
 
 const [OFF, ERROR] = ['off', 'error'];
 

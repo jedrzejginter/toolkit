@@ -13,7 +13,7 @@ const allDependencies = {
 const unlockedDependencies = [];
 
 Object.entries(allDependencies).forEach(([dependency, version]) => {
-  if (/^[<>^~]/.test(version) || version === '*') {
+  if (!/^[\da-z]/i.test(version)) {
     unlockedDependencies.push([dependency, version]);
   }
 });
