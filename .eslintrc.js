@@ -1,1 +1,6 @@
-module.exports = require('./eslint');
+module.exports = {
+  extends: [require.resolve('./eslint')],
+  rules: {
+    'import/no-extraneous-dependencies': 'off',
+  },
+};

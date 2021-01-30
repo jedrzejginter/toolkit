@@ -20,6 +20,7 @@ module.exports = {
   hasReact: hasAnyDep('react'),
   hasJest: hasAnyDep('jest'),
   hasNext: hasAnyDep('next') || existsSync('next.config.js'),
+  hasTailwind: hasAnyDep('tailwindcss') || existsSync('tailwind.config.js'),
   hasTestingLibrary: hasAnyDep(
     '@testing-library/jest-dom',
     '@testing-library/react',
