@@ -7,7 +7,7 @@ module.exports = {
   // This includes 'prettier-plugin-package' for formatting package.json
   '*.{json,md}': 'prettier --write',
 
-  // It's important not to use "yarn lint", because it will lint whole
-  // project anyway, so lint-staged wouldn't make any sense.
+  // It's important to omit path here so only staged files are passed
+  // to eslint.
   '*.{ts,tsx,js,jsx}': `eslint --ext '.js,.jsx,.ts,.tsx' --fix`,
 };
