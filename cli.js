@@ -18,7 +18,7 @@ function here(...p) {
   return join(__dirname, ...p);
 }
 
-const exportRequired = readFileSync(here('export-required'), 'utf-8');
+const exportRequired = readFileSync(here('export-require'), 'utf-8');
 
 function q(s) {
   return `"${s}"`;
@@ -76,7 +76,7 @@ const map = {
     );
   },
   cp: () => {
-    copy('.dockerignore');
+    copy('dockerignore', '.dockerignore');
     copy('.gitattributes');
     copy('.npmrc');
     copy('nvmrc', '.nvmrc');
