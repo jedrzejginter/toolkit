@@ -6,10 +6,27 @@
   "repository": "jedrzejginter/toolkit",
   "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
   "bin": "./cli.js",
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "publish-rc": "npm publish --tag next",
     "test": "jest"
   },
+  "files": [
+    "*.d.ts",
+    "dockerignore",
+    "env.js",
+    "eslint.js",
+    "export-require",
+    "gitattributes",
+    "husky.js",
+    "lintstaged.js",
+    "npmrc",
+    "nvmrc",
+    "prettier.js",
+    "tailwind*"
+  ],
   "dependencies": {
     "react": "17.0.1",
     "react-dom": "17.0.1",

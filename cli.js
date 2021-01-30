@@ -77,8 +77,8 @@ const map = {
   },
   cp: () => {
     copy('dockerignore', '.dockerignore');
-    copy('.gitattributes');
-    copy('.npmrc');
+    copy('gitattributes', '.gitattributes');
+    copy('npmrc', '.npmrc');
     copy('nvmrc', '.nvmrc');
     copy('scripts/rewrite-pkg-json.js');
     addNpmScript('test', 'NODE_ENV=test jest');

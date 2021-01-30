@@ -1,6 +1,0 @@
-tsconfig.*
-.*rc.js
-.gitignore
-NOTES.md
-logs
-*.tgz
