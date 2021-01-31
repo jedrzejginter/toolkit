@@ -64,16 +64,26 @@ function copyReactComp(cname) {
   reexpesm(cname, fn, `src/components/${cname}/index.ts`);
 }
 
-function fixImports(fn) {
+function modifyFileContents(fn, pred) {
   let contents = readFileSync(fn, 'utf-8');
-  contents = contents.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`);
+  contents = pred(contents);
   writeFileSync(fn, contents, 'utf-8');
+}
+
+function fixImports(fn) {
+  modifyFileContents(fn, (c) =>
+    c.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`),
+  );
+}
+
+function addNodeVersion(fn, ver) {
+  modifyFileContents(fn, (c) => c.replace(/__NODE_VERSION__/g, ver));
 }
 
 const map = {
   tailwind: () => {
-    copy('tailwindcss.css', 'src/assets/css/tailwind.css');
-    copy('tailwindcss.js', 'tailwind.config.js', [fixImports]);
+    copy('_tailwind.css', 'src/assets/css/tailwind.css');
+    copy('_tailwind.config.js', 'tailwind.config.js', [fixImports]);
     addNpmScript(
       'build:tailwind',
       `tailwind build src/assets/css/tailwind.css -o public/css/tailwind.out.css`,
@@ -81,9 +91,11 @@ const map = {
 
     return ['tailwindcss'];
   },
-  docker: () => {
-    copy('dockerignore', '.dockerignore');
-    copy('dockerimage', 'Dockerfile');
+  docker: ({ nodeVersion }) => {
+    copy('_dockerignore', '.dockerignore');
+    copy('_Dockerfile', 'Dockerfile', [
+      (fn) => addNodeVersion(fn, nodeVersion === '12' ? '12.20.1' : '14.15.4'),
+    ]);
     copy('scripts/rewrite-pkg-json.js');
 
     return [];
@@ -95,8 +107,8 @@ const map = {
   },
   typescript: () => {
     // for very simple project we might not need typescript
-    copy('typescripteslint.json', 'tsconfig.eslint.json');
-    copy('typescriptconfig.json', 'tsconfig.json');
+    copy('_tsconfig.eslint.json', 'tsconfig.eslint.json');
+    copy('_tsconfig.json', 'tsconfig.json');
     addNpmScript('typecheck', 'tsc --noEmit');
 
     return [
@@ -107,11 +119,11 @@ const map = {
     ];
   },
   nextjs: ({ files }) => {
-    copy('envexample', '.env.example');
-    copy('nextconfig.js', 'next.config.js', [fixImports]);
+    copy('_env.example', '.env.example');
+    copy('_next.config.js', 'next.config.js', [fixImports]);
 
     if (files.includes('typescript')) {
-      copy('env-dts', 'types/env.d.ts');
+      copy('_env-dts', 'types/env.d.ts');
     }
 
     addNpmScript('build', 'NODE_ENV=production next build');
@@ -122,8 +134,8 @@ const map = {
     return ['envalid', 'next'];
   },
   always: ({ nodeVersion, files }) => {
-    copy('gitattributes', '.gitattributes');
-    copy('npmrc', '.npmrc');
+    copy('_gitattributes', '.gitattributes');
+    copy('_npmrc', '.npmrc');
     copy(`nvmrc-${nodeVersion}`, '.nvmrc');
 
     // those are basic tools that we will have anyway, no option to opt out
