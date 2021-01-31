@@ -22,6 +22,7 @@
     "export-require",
     "gitattributes",
     "husky.js",
+    "lintstaged-base.js",
     "lintstaged.js",
     "nextconfig.js",
     "npmrc",
