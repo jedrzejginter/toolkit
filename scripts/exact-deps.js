@@ -1,13 +1,11 @@
 // Check, if all npm dependencies has been installed with --exact flag.
-const readPkgUp = require('read-pkg-up');
-
-const { packageJson: pkg } = readPkgUp.sync({ normalize: true });
+const packageJson = require('../package.json');
 
 const allDependencies = {
-  ...pkg.dependencies,
-  ...pkg.devDependencies,
-  ...pkg.peerDependencies,
-  ...pkg.optionalDependencies,
+  ...packageJson.dependencies,
+  ...packageJson.devDependencies,
+  ...packageJson.peerDependencies,
+  ...packageJson.optionalDependencies,
 };
 
 const unlockedDependencies = [];

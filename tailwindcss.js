@@ -1,15 +1,6 @@
 const theme = require('tailwindcss/defaultTheme');
 
-function createIncrement(initialValue = 1) {
-  let value = initialValue;
-
-  return function increment() {
-    value += 1;
-    return value;
-  };
-}
-
-const zIndex = createIncrement(0);
+const { zIndex } = require('./utils');
 
 module.exports = {
   future: {

@@ -1,18 +1,6 @@
 const envalid = require('envalid');
 
-// Filter env variables for Next config.
-// https://github.com/zeit/next.js/blob/master/errors/env-key-not-allowed.md
-function filterEnv(allEnv) {
-  const cleanEnv = {};
-
-  for (const envName in allEnv) {
-    if (!/^(__|NODE_)/.test(envName)) {
-      cleanEnv[envName] = allEnv[envName];
-    }
-  }
-
-  return cleanEnv;
-}
+const { filterEnv } = require('./utils');
 
 // This requires `.env` file to always exists when running Next.js
 const env = envalid.cleanEnv(process.env, {

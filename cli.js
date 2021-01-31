@@ -33,9 +33,10 @@ function reexpesm(spec, fn, dest) {
   writeFileSync(dest, c, 'utf-8');
 }
 
-function copy(fn, dest) {
+function copy(fn, dest, modifiers = []) {
   mkdirSync(dirname(dest || fn), { recursive: true });
   copyFileSync(here(fn), dest || fn);
+  modifiers.forEach((modify) => modify(dest || fn));
 }
 
 const hasOwn = (o, p) => Object.prototype.hasOwnProperty.call(o, p);
@@ -63,10 +64,16 @@ function copyReactComp(cname) {
   reexpesm(cname, fn, `src/components/${cname}/index.ts`);
 }
 
+function fixImports(fn) {
+  let contents = readFileSync(fn, 'utf-8');
+  contents = contents.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`);
+  writeFileSync(fn, contents, 'utf-8');
+}
+
 const map = {
   tailwind: () => {
     copy('tailwindcss.css', 'src/assets/css/tailwind.css');
-    copy('tailwindcss.js', 'tailwind.config.js');
+    copy('tailwindcss.js', 'tailwind.config.js', [fixImports]);
     addNpmScript(
       'build:tailwind',
       `tailwind build src/assets/css/tailwind.css -o public/css/tailwind.out.css`,
@@ -101,7 +108,7 @@ const map = {
   },
   nextjs: ({ files }) => {
     copy('envexample', '.env.example');
-    copy('nextconfig.js', 'next.config.js');
+    copy('nextconfig.js', 'next.config.js', [fixImports]);
 
     if (files.includes('typescript')) {
       copy('env-dts', 'types/env.d.ts');
@@ -146,15 +153,6 @@ const map = {
     ].filter(Boolean);
   },
 };
-
-// if (cmd === 'setup') {
-//   Object.entries(map).forEach(([, fn]) => {
-//     fn();
-//   });
-//   return;
-// }
-
-// throw new Error('Unknown command');
 
 (async () => {
   const choices = Object.keys(map)
