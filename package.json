@@ -24,6 +24,7 @@
     "_tailwind.css",
     "_tsconfig.eslint.js",
     "_tsconfig.js",
+    "const.js",
     "eslint.js",
     "export-default-esm",
     "export-require",
