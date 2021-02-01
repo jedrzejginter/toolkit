@@ -199,7 +199,7 @@ const map = {
 
   let answers = {
     files: features,
-    nodeVersion: 12,
+    nodeVersion: '12',
     packager: 'yarn',
   };
 
