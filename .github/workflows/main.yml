@@ -27,7 +27,9 @@ jobs:
         run: |
           cd toolkit-project
           ../cli.js --dry-run
-          yarn add ../ginterdev-toolkit-0.1.0-rc2.tgz
+          cp ginterdev-toolkit-0.1.0-rc2.tgz toolkit.tgz
+          yarn add toolkit.tgz
+          rm -f toolkit.tgz
           ls -al
           cat package.json
           git config user.name github-actions
