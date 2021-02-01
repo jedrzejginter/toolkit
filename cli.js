@@ -143,6 +143,7 @@ const map = {
 
     if (files.includes('typescript')) {
       copy('_env-dts', 'types/env.d.ts');
+      copy('_babel-plugins-dts', 'types/babel-plugins.d.ts');
     }
 
     addNpmScript('build', 'NODE_ENV=production next build');
@@ -150,7 +151,10 @@ const map = {
     addNpmScript('dev', 'NODE_ENV=development next -p ${PORT:3001}');
     addNpmScript('start', 'NODE_ENV=production next start');
 
-    return { deps: ['envalid', 'next'], devDeps: [] };
+    return {
+      deps: ['envalid', 'next'],
+      devDeps: ['babel-plugin-inline-react-svg'],
+    };
   },
   always: ({ nodeVersion, files }) => {
     copy('_gitattributes', '.gitattributes');
