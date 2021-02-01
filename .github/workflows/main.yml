@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          path: toolkit-project
+          ref: toolkit-project
+          token: ${{ secrets.ACCESS_TOKEN_WITH_WORKFLOW_PERMISSIONS }}
+
       - uses: actions/setup-node@v1
         with:
           node-version: 12.20.1
@@ -19,17 +25,14 @@ jobs:
 
       - name: Create project
         run: |
-          mkdir cli-project
-          cd cli-project
-          ../cli.js --dry-run
+          cd toolkit-project
+          cp ../.gitignore .gitignore
+          rm -f yarn.lock package.json .*.js *.js .*rc
+          rm -rf .github scripts src
+          ../cli.js --ci
           ls -al
-
-          # cp -R create-react-project-app-01/.git new-project/.git
-          # rm -rf create-react-project-app-01
-          # mv new-project create-react-project-app-01
-          # cd create-react-project-app-01
-          # git config user.name github-actions
-          # git config user.email github-actions@github.com
-          # git add .
-          # git diff --quiet && git diff --staged --quiet || \
-          #   git commit -m "[gh-actions] Push new version of the project"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || \
+            git commit -m "Generate project" && git push -f origin toolkit-project

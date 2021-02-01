@@ -39,6 +39,12 @@ function copy(fn, dest, modifiers = []) {
   modifiers.forEach((modify) => modify(dest || fn));
 }
 
+function copyDir(src, dest) {
+  execa('cp', ['-R', here(src), dest], {
+    stdio: 'inherit',
+  });
+}
+
 const hasOwn = (o, p) => Object.prototype.hasOwnProperty.call(o, p);
 
 function addNpmScript(name, scr) {
@@ -89,7 +95,7 @@ const map = {
       `tailwind build src/assets/css/tailwind.css -o public/css/tailwind.out.css`,
     );
 
-    return ['tailwindcss'];
+    return { deps: ['tailwindcss'], devDeps: [] };
   },
   docker: ({ nodeVersion }) => {
     copy('_dockerignore', '.dockerignore');
@@ -98,12 +104,12 @@ const map = {
     ]);
     copy('scripts/rewrite-pkg-json.js');
 
-    return [];
+    return { deps: [], devDeps: [] };
   },
   jest: () => {
     addNpmScript('test', 'NODE_ENV=test jest');
 
-    return ['jest'];
+    return { deps: [], devDeps: ['jest'] };
   },
   typescript: () => {
     // for very simple project we might not need typescript
@@ -111,12 +117,23 @@ const map = {
     copy('_tsconfig.json', 'tsconfig.json');
     addNpmScript('typecheck', 'tsc --noEmit');
 
-    return [
-      'typescript',
-      '@types/node',
-      '@typescript-eslint/eslint-plugin',
-      '@typescript-eslint/parser',
-    ];
+    return {
+      deps: [],
+      devDeps: [
+        'typescript',
+        '@types/node',
+        '@typescript-eslint/eslint-plugin',
+        '@typescript-eslint/parser',
+      ],
+    };
+  },
+  'gh-actions': () => {
+    copyDir('_github', '.github');
+    return { deps: [], devDeps: [] };
+  },
+  vscode: () => {
+    copyDir('_vscode', '.vscode');
+    return { deps: [], devDeps: [] };
   },
   nextjs: ({ files }) => {
     copy('_env.example', '.env.example');
@@ -131,7 +148,7 @@ const map = {
     addNpmScript('dev', 'NODE_ENV=development next -p ${PORT:3001}');
     addNpmScript('start', 'NODE_ENV=production next start');
 
-    return ['envalid', 'next'];
+    return { deps: ['envalid', 'next'], devDeps: [] };
   },
   always: ({ nodeVersion, files }) => {
     copy('_gitattributes', '.gitattributes');
@@ -148,38 +165,45 @@ const map = {
     copyReactComp('Input');
     copyReactComp('Spinner');
 
-    return [
-      'eslint-config-prettier',
-      'eslint-import-resolver-alias',
-      'eslint-plugin-import',
-      'eslint-plugin-prettier',
-      'eslint',
-      'husky',
-      'lint-staged',
-      'prettier',
-      'prettier-plugin-package',
-      'react',
-      'react-dom',
-      files.includes('typescript') && '@types/react',
-      files.includes('typescript') && '@types/react-dom',
-    ].filter(Boolean);
+    return {
+      deps: ['react', 'react-dom'],
+      devDeps: [
+        'eslint-config-prettier',
+        'eslint-import-resolver-alias',
+        'eslint-plugin-import',
+        'eslint-plugin-prettier',
+        'eslint',
+        'husky',
+        'lint-staged',
+        'prettier',
+        'prettier-plugin-package',
+        files.includes('typescript') && '@types/react',
+        files.includes('typescript') && '@types/react-dom',
+      ].filter(Boolean),
+    };
   },
 };
 
 (async () => {
-  const choices = Object.keys(map)
-    .filter((k) =>
-      ['tailwind', 'docker', 'typescript', 'jest', 'nextjs'].includes(k),
-    )
-    .map((k) => ({ message: k, value: k, checked: true }));
+  const features = Object.keys(map).filter((k) =>
+    [
+      'tailwind',
+      'docker',
+      'typescript',
+      'jest',
+      'nextjs',
+      'vscode',
+      'gh-actions',
+    ].includes(k),
+  );
 
   let answers = {
-    files: choices,
+    files: features,
     nodeVersion: 12,
     packager: 'yarn',
   };
 
-  if (1 + 2 === 1) {
+  if (!cliArgs.ci) {
     answers = await inq.prompt([
       {
         type: 'list',
@@ -199,7 +223,7 @@ const map = {
         type: 'checkbox',
         name: 'files',
         message: 'Which files should be created?',
-        choices,
+        choices: features.map((k) => ({ message: k, value: k, checked: true })),
       },
     ]);
   }
@@ -207,6 +231,7 @@ const map = {
   const steps = ['always', ...answers.files];
 
   const npmDeps = [];
+  const npmDevDeps = [];
 
   steps.forEach((step) => {
     const exec = hasOwn(map, step) ? map[step] : null;
@@ -215,19 +240,39 @@ const map = {
       return;
     }
 
-    npmDeps.push(...exec(answers));
+    const { deps, devDeps } = exec(answers);
+
+    npmDeps.push(...deps);
+    npmDevDeps.push(...devDeps);
   });
 
   const [executable, ...cmdArgs] =
     answers.packager === 'npm'
-      ? ['npm', 'add', '--save-dev', '--save-exact']
-      : ['yarn', 'add', '--dev', '--exact'];
+      ? ['npm', 'add', '--save-exact']
+      : ['yarn', 'add', '--exact'];
+
+  // it is not guaranteed that we will have prod deps
+  if (npmDeps.length > 0) {
+    cmdArgs.push(...npmDeps);
+  }
+
+  // we will always have some dev dependencies
+  cmdArgs.push(
+    answers.packager === 'npm' ? '--save-dev' : '--dev',
+    ...npmDevDeps,
+  );
 
   if (cliArgs['dry-run']) {
     process.stdout.write(
       'Skipping dependencies install due to --dry-run flag\n',
     );
     return;
+  }
+
+  // this is crucial, because if we don't have package.json here
+  // yarn/npm will install deps in parent dir (this is weird)
+  if (!existsSync('package.json')) {
+    await execa('yarn', ['init', '-y'], { stdio: 'inherit' });
   }
 
   await execa(executable, [...cmdArgs, ...npmDeps], {
