@@ -377,6 +377,9 @@
     postcss "7.0.32"
     purgecss "^2.3.0"
 
+"@ginterdev/toolkit@file:./mod":
+  version "0.0.0"
+
 "@hapi/accept@5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-5.0.1.tgz#068553e867f0f63225a506ed74e899441af53e10"
