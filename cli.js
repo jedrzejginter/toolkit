@@ -203,7 +203,7 @@ const map = {
     packager: 'yarn',
   };
 
-  if (!cliArgs['--ci']) {
+  if (!cliArgs.ci) {
     answers = await inq.prompt([
       {
         type: 'list',
