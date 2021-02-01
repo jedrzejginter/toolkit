@@ -173,28 +173,36 @@ const map = {
     )
     .map((k) => ({ message: k, value: k, checked: true }));
 
-  const answers = await inq.prompt([
-    {
-      type: 'list',
-      name: 'nodeVersion',
-      message: 'Which version of Node do you want to use?',
-      choices: ['12', '14'],
-      default: '14',
-    },
-    {
-      type: 'list',
-      name: 'packager',
-      message: 'Which package manager to use?',
-      choices: ['yarn', 'npm'],
-      default: 'yarn',
-    },
-    {
-      type: 'checkbox',
-      name: 'files',
-      message: 'Which files should be created?',
-      choices,
-    },
-  ]);
+  let answers = {
+    files: choices,
+    nodeVersion: 12,
+    packager: 'yarn',
+  };
+
+  if (1 + 2 === 1) {
+    answers = await inq.prompt([
+      {
+        type: 'list',
+        name: 'nodeVersion',
+        message: 'Which version of Node do you want to use?',
+        choices: ['12', '14'],
+        default: '14',
+      },
+      {
+        type: 'list',
+        name: 'packager',
+        message: 'Which package manager to use?',
+        choices: ['yarn', 'npm'],
+        default: 'yarn',
+      },
+      {
+        type: 'checkbox',
+        name: 'files',
+        message: 'Which files should be created?',
+        choices,
+      },
+    ]);
+  }
 
   const steps = ['always', ...answers.files];
 
