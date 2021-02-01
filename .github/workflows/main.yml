@@ -28,10 +28,10 @@ jobs:
         run: |
           cd toolkit-project
           ../cli.js --dry-run
+          touch yarn.lock
           ls -al
-          git config user.name "Github Actions"
-          git config user.email actions@github.com
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --quiet && git diff --staged --quiet || \
-            git commit -m "[gh-actions] Push new version of the project"
-          git push -f origin toolkit-project
+            git commit -m "Generate project" && git push -f origin toolkit-project
