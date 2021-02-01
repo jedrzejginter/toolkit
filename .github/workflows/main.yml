@@ -14,6 +14,7 @@ jobs:
         with:
           path: toolkit-project
           ref: toolkit-project
+          token: ${{ secrets.ACCESS_TOKEN_WITH_WORKFLOW_PERMISSIONS }}
 
       - uses: actions/setup-node@v1
         with:
@@ -24,8 +25,6 @@ jobs:
 
       - run: npm pack
       - name: Create project
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd toolkit-project
           ../cli.js --dry-run
