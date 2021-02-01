@@ -30,6 +30,7 @@ jobs:
           cp ../.gitignore .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github scripts src
+          rm -f ../package.json ../yarn.lock
           ../cli.js
           ls -al
           git config user.name "github-actions[bot]"
