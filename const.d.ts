@@ -1,5 +1,0 @@
-declare const LINT_STAGED_PACKAGE_JSON: string;
-declare const LINT_STAGED_ESLINT: string;
-declare const LINT_STAGED_PRETTIER: string;
-
-export { LINT_STAGED_PACKAGE_JSON, LINT_STAGED_ESLINT, LINT_STAGED_PRETTIER };

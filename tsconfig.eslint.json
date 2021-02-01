@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "allowJs": true
-  },
-  "exclude": ["node_modules"],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", ".*.js"]
-}
