@@ -1,7 +1,7 @@
 // patterns used in lint-staged config
 const LINT_STAGED_PACKAGE_JSON = 'package.json';
 const LINT_STAGED_ESLINT = '*.{ts,tsx,js,jsx}';
-const LINT_STAGED_PRETTIER = '*.{json,md,mdx,css,less,sass,scss}';
+const LINT_STAGED_PRETTIER = '*.{json,md,mdx,css,less,sass,scss,yml,yaml}';
 
 module.exports = {
   LINT_STAGED_PACKAGE_JSON,
