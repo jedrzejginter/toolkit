@@ -27,8 +27,8 @@ jobs:
       - name: Create project
         run: |
           cd toolkit-project
-          ../cli.js --dry-run
-          touch yarn.lock
+          cp ../.gitignore .gitignore
+          ../cli.js
           ls -al
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
