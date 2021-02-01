@@ -10,6 +10,7 @@ const {
 const inq = require('inquirer');
 const minimist = require('minimist');
 const { join, dirname } = require('path');
+const maxSatisfying = require('semver/ranges/max-satisfying');
 
 const cliArgs = minimist(process.argv.slice(2));
 
@@ -201,6 +202,7 @@ const map = {
     files: features,
     nodeVersion: '12',
     packager: 'yarn',
+    ie11: true,
   };
 
   if (!cliArgs.ci) {
@@ -211,6 +213,12 @@ const map = {
         message: 'Which version of Node do you want to use?',
         choices: ['12', '14'],
         default: '14',
+      },
+      {
+        type: 'confirm',
+        name: 'ie11',
+        message: 'Do you need IE11 support?',
+        default: true,
       },
       {
         type: 'list',
@@ -246,36 +254,84 @@ const map = {
     npmDevDeps.push(...devDeps);
   });
 
-  const [executable, ...cmdArgs] =
-    answers.packager === 'npm'
-      ? ['npm', 'add', '--save-exact']
-      : ['yarn', 'add', '--exact'];
+  // const [executable, ...cmdArgs] =
+  //   answers.packager === 'npm'
+  //     ? ['npm', 'add', '--save-exact']
+  //     : ['yarn', 'add', '--exact'];
 
   // it is not guaranteed that we will have prod deps
-  if (npmDeps.length > 0) {
-    cmdArgs.push(...npmDeps);
-  }
+  // if (npmDeps.length > 0) {
+  //   cmdArgs.push(...npmDeps);
+  // }
 
   // we will always have some dev dependencies
-  cmdArgs.push(
-    answers.packager === 'npm' ? '--save-dev' : '--dev',
-    ...npmDevDeps,
-  );
+  // cmdArgs.push(
+  //   answers.packager === 'npm' ? '--save-dev' : '--dev',
+  //   ...npmDevDeps,
+  // );
 
-  if (cliArgs['dry-run']) {
-    process.stdout.write(
-      'Skipping dependencies install due to --dry-run flag\n',
-    );
-    return;
-  }
+  // if (cliArgs['dry-run']) {
+  //   process.stdout.write(
+  //     'Skipping dependencies install due to --dry-run flag\n',
+  //   );
+  //   return;
+  // }
 
   // this is crucial, because if we don't have package.json here
   // yarn/npm will install deps in parent dir (this is weird)
   if (!existsSync('package.json')) {
-    await execa('yarn', ['init', '-y'], { stdio: 'inherit' });
+    await execa('npm', ['init', '-y'], { stdio: 'inherit' });
   }
 
-  await execa(executable, [...cmdArgs, ...npmDeps], {
-    stdio: 'inherit',
-  });
+  function getVersions(dep) {
+    const out = execa.sync('npm', ['view', dep, 'versions', '--json'], {
+      stderr: 'inherit',
+    }).stdout;
+
+    return JSON.parse(out);
+  }
+
+  const constraints = {
+    // no support for v5 for now (version 5 is free
+    // only for open source projects)
+    husky: (v) => maxSatisfying(v, '<5'),
+    // tailwind v2 has dropped support for IE11
+    tailwindcss: answers.ie11 ? (v) => maxSatisfying(v, '<2') : undefined,
+  };
+
+  function versionifyDeps(deps) {
+    return deps.reduce((acc, d) => {
+      const versions = getVersions(d);
+      const constraint = constraints[d];
+      let ver = maxSatisfying(versions, '>=0');
+
+      if (typeof constraint === 'function') {
+        ver = constraint(versions);
+      }
+
+      acc[d] = ver;
+      return acc;
+    }, {});
+  }
+
+  let pkgJson = readFileSync('package.json', 'utf-8');
+  pkgJson = JSON.parse(pkgJson);
+
+  if (npmDeps.length > 0) {
+    pkgJson.dependencies = {
+      ...versionifyDeps(npmDeps),
+      ...pkgJson.dependencies,
+    };
+  }
+
+  pkgJson.devDependencies = {
+    ...versionifyDeps(npmDevDeps),
+    ...pkgJson.devDependencies,
+  };
+
+  writeFileSync('package.json', JSON.stringify(pkgJson, null, 2), 'utf-8');
+
+  // await execa(executable, [...cmdArgs, ...npmDeps], {
+  //   stdio: 'inherit',
+  // });
 })();

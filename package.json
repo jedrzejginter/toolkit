@@ -57,7 +57,8 @@
     "execa": "^5.0",
     "inquirer": "^7.3",
     "minimist": "^1.2.3",
-    "read-pkg-up": "^7.0"
+    "read-pkg-up": "^7.0",
+    "semver": "^7.3"
   },
   "devDependencies": {
     "@types/react": "17.0.0",
