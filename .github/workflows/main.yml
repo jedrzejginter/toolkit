@@ -26,8 +26,6 @@ jobs:
       - name: Create project
         run: |
           cd toolkit-project
-          git reset --hard b21689c
-          rm -f .gitkeep
           ../cli.js --dry-run
           yarn add ../ginterdev-toolkit-0.1.0-rc2.tgz
           ls -al
@@ -38,13 +36,3 @@ jobs:
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "[gh-actions] Push new version of the project"
           git push -f origin toolkit-project
-
-          # cp -R create-react-project-app-01/.git new-project/.git
-          # rm -rf create-react-project-app-01
-          # mv new-project create-react-project-app-01
-          # cd create-react-project-app-01
-          # git config user.name github-actions
-          # git config user.email github-actions@github.com
-          # git add .
-          # git diff --quiet && git diff --staged --quiet || \
-          #   git commit -m "[gh-actions] Push new version of the project"
