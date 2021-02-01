@@ -28,6 +28,8 @@ jobs:
         run: |
           cd toolkit-project
           cp ../.gitignore .gitignore
+          rm -f yarn.lock package.json .*.js *.js .*rc
+          rm -rf .github scripts src
           ../cli.js
           ls -al
           git config user.name "github-actions[bot]"
