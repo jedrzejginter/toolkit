@@ -138,6 +138,10 @@ const map = {
     copy('_npmrc', '.npmrc');
     copy(`nvmrc-${nodeVersion}`, '.nvmrc');
 
+    execa('cp', ['-R', here('_github'), '.github'], {
+      stdio: 'inherit',
+    });
+
     // those are basic tools that we will have anyway, no option to opt out
     rereq('husky', '.huskyrc.js');
     rereq('lintstaged', '.lintstagedrc.js');
