@@ -29,7 +29,7 @@ jobs:
           cp ../.gitignore .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github scripts src
-          node ../cli.js
+          ../cli.js --ci
           ls -al
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

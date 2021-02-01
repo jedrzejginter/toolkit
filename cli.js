@@ -39,6 +39,12 @@ function copy(fn, dest, modifiers = []) {
   modifiers.forEach((modify) => modify(dest || fn));
 }
 
+function copyDir(src, dest) {
+  execa('cp', ['-R', here(src), dest], {
+    stdio: 'inherit',
+  });
+}
+
 const hasOwn = (o, p) => Object.prototype.hasOwnProperty.call(o, p);
 
 function addNpmScript(name, scr) {
@@ -121,6 +127,14 @@ const map = {
       ],
     };
   },
+  'gh-actions': () => {
+    copyDir('_github', '.github');
+    return { deps: [], devDeps: [] };
+  },
+  vscode: () => {
+    copyDir('_vscode', '.vscode');
+    return { deps: [], devDeps: [] };
+  },
   nextjs: ({ files }) => {
     copy('_env.example', '.env.example');
     copy('_next.config.js', 'next.config.js', [fixImports]);
@@ -140,10 +154,6 @@ const map = {
     copy('_gitattributes', '.gitattributes');
     copy('_npmrc', '.npmrc');
     copy(`nvmrc-${nodeVersion}`, '.nvmrc');
-
-    execa('cp', ['-R', here('_github'), '.github'], {
-      stdio: 'inherit',
-    });
 
     // those are basic tools that we will have anyway, no option to opt out
     rereq('husky', '.huskyrc.js');
@@ -175,19 +185,25 @@ const map = {
 };
 
 (async () => {
-  const choices = Object.keys(map)
-    .filter((k) =>
-      ['tailwind', 'docker', 'typescript', 'jest', 'nextjs'].includes(k),
-    )
-    .map((k) => ({ message: k, value: k, checked: true }));
+  const features = Object.keys(map).filter((k) =>
+    [
+      'tailwind',
+      'docker',
+      'typescript',
+      'jest',
+      'nextjs',
+      'vscode',
+      'gh-actions',
+    ].includes(k),
+  );
 
   let answers = {
-    files: choices.map(({ value }) => value),
+    files: features,
     nodeVersion: 12,
     packager: 'yarn',
   };
 
-  if (1 + 2 === 1) {
+  if (!cliArgs['--ci']) {
     answers = await inq.prompt([
       {
         type: 'list',
@@ -207,7 +223,7 @@ const map = {
         type: 'checkbox',
         name: 'files',
         message: 'Which files should be created?',
-        choices,
+        choices: features.map((k) => ({ message: k, value: k, checked: true })),
       },
     ]);
   }
