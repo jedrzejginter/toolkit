@@ -23,15 +23,13 @@ jobs:
         env:
           NODE_ENV: production
 
-      - run: npm pack
       - name: Create project
         run: |
           cd toolkit-project
           cp ../.gitignore .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github scripts src
-          rm -f ../package.json ../yarn.lock
-          ../cli.js
+          node ../cli.js
           ls -al
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
