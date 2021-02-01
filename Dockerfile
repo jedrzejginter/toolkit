@@ -1,4 +1,4 @@
-FROM node:14.15.4-alpine AS web-base
+FROM node:12.20.1-alpine AS web-base
 ENV PATH /usr/src/node_modules/.bin:$PATH
 ENV NODE_PATH /usr/src/node_modules/:$NODE_PATH
 WORKDIR /usr/src/app
