@@ -20,6 +20,7 @@
     "_env.example",
     "_gitattributes",
     "_github",
+    "_next-babelrc.js",
     "_next.config.js",
     "_npmrc",
     "_tailwind.config.js",

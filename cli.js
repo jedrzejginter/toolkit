@@ -139,6 +139,7 @@ const map = {
   nextjs: ({ files }) => {
     copy('_env.example', '.env.example');
     copy('_next.config.js', 'next.config.js', [fixImports]);
+    copy('_next-babelrc.js', '.babelrc.js');
 
     if (files.includes('typescript')) {
       copy('_env-dts', 'types/env.d.ts');
