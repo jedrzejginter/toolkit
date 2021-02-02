@@ -13,3 +13,4 @@ jobs:
       - uses: bahmutov/npm-install@v1
         with:
           install-command: yarn
+      - run: yarn run typecheck
