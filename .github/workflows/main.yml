@@ -27,7 +27,6 @@ jobs:
           cp ../.gitignore .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github .vscode scripts src
-          rm -f ../package.json
           cp ../*.tgz ./
           ../cli.js --ci
           ls -al
