@@ -295,6 +295,11 @@ const map = {
       const constraint = constraints[d];
       let ver = versions[versions.length - 1];
 
+      if (cliArgs.ci && /ginterdev\/toolkit/.test(d)) {
+        // this is how `npm pack` will name the tarball
+        ver = `file:./ginterdev-toolkit-${pkg.version}.tgz`;
+      }
+
       if (typeof constraint === 'function') {
         ver = constraint(versions);
       }

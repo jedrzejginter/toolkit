@@ -22,10 +22,13 @@ jobs:
 
       - name: Create project
         run: |
+          npm pack
           cd toolkit-project
           cp ../.gitignore .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github .vscode scripts src
+          rm -f ../package.json
+          cp .../*.tgz ./
           ../cli.js --ci
           ls -al
           git config user.name "github-actions[bot]"
