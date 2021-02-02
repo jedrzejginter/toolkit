@@ -7,27 +7,31 @@
     "dev": "NODE_ENV=development next -p ${PORT:3001}",
     "start": "NODE_ENV=production next start"
   },
-  "devDependencies": {
-    "@types/node": "14.14.22",
-    "@types/react": "17.0.0",
-    "@types/react-dom": "17.0.0",
-    "@typescript-eslint/eslint-plugin": "4.14.2",
-    "@typescript-eslint/parser": "4.14.2",
+  "dependencies": {
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "tailwindcss": "1.9.6",
     "envalid": "7.0.0",
-    "eslint": "7.19.0",
+    "next": "10.0.7-canary.0"
+  },
+  "devDependencies": {
+    "@ginterdev/toolkit": "file:./ginterdev-toolkit-0.1.0-rc3.tgz",
     "eslint-config-prettier": "7.2.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-prettier": "3.3.1",
+    "eslint": "7.19.0",
     "husky": "4.3.8",
-    "jest": "26.6.3",
     "lint-staged": "10.5.3",
-    "next": "10.0.6",
     "prettier": "2.2.1",
     "prettier-plugin-package": "1.3.0",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "tailwindcss": "2.0.2",
-    "typescript": "4.1.3"
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0",
+    "jest": "27.0.0-next.2",
+    "typescript": "4.2.0-dev.20210202",
+    "@types/node": "14.14.22",
+    "@typescript-eslint/eslint-plugin": "4.14.3-alpha.0",
+    "@typescript-eslint/parser": "4.14.3-alpha.0",
+    "babel-plugin-inline-react-svg": "1.1.2"
   }
 }
