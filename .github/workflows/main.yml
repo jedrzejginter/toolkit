@@ -25,7 +25,7 @@ jobs:
           NODE_ENV: production
 
       - run: npm pack
-        working-directory: toolkit-project
+        working-directory: cli
 
       - name: Create project
         working-directory: toolkit-project
