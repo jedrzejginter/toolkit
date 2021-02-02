@@ -11,3 +11,5 @@ jobs:
         with:
           node-version: '12.20.1'
       - uses: bahmutov/npm-install@v1
+        with:
+          install-command: yarn

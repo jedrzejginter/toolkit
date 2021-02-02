@@ -9,6 +9,7 @@ const {
 } = require('fs');
 const inq = require('inquirer');
 const minimist = require('minimist');
+const fetch = require('node-fetch');
 const { join, dirname } = require('path');
 const maxSatisfying = require('semver/ranges/max-satisfying');
 
@@ -92,6 +93,20 @@ function fixImports(fn) {
 
 function addNodeVersion(fn, ver) {
   modifyFileContents(fn, (c) => c.replace(/__NODE_VERSION__/g, ver));
+}
+
+function createGitignore() {
+  return new Promise((resolve, reject) => {
+    fetch(
+      'https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore',
+    )
+      .then((r) => r.text())
+      .then((c) => {
+        writeFileSync('.gitignore', c, 'utf-8');
+        resolve();
+      })
+      .catch(reject);
+  });
 }
 
 const map = {
@@ -254,7 +269,7 @@ const map = {
   const npmDeps = [];
   const npmDevDeps = [];
 
-  steps.forEach((step) => {
+  steps.forEach(async (step) => {
     const exec = hasOwn(map, step) ? map[step] : null;
 
     if (exec === null) {
@@ -273,12 +288,23 @@ const map = {
     await execa('npm', ['init', '-y'], { stdio: 'inherit' });
   }
 
-  function getVersions(dep) {
+  function isNotTaggedVer(v) {
+    return /^\d+\.\d+\.\d+$/.test(v);
+  }
+
+  function getVersions(dep, removeTaggedVersions = true) {
     const out = execa.sync('npm', ['view', dep, 'versions', '--json'], {
       stderr: 'inherit',
     }).stdout;
 
-    return JSON.parse(out);
+    const ver = JSON.parse(out);
+
+    return removeTaggedVersions ? ver.filter(isNotTaggedVer) : ver;
+  }
+
+  function getLatest(d) {
+    return execa.sync('npm', ['view', d, 'version'], { stderr: 'inherit' })
+      .stdout;
   }
 
   const constraints = {
@@ -291,17 +317,18 @@ const map = {
 
   function versionifyDeps(deps) {
     return deps.reduce((acc, d) => {
-      const versions = getVersions(d);
       const constraint = constraints[d];
-      let ver = versions[versions.length - 1];
+      let ver = 'latest';
 
-      if (cliArgs.ci && /ginterdev\/toolkit/.test(d)) {
-        // this is how `npm pack` will name the tarball
-        ver = `file:./ginterdev-toolkit-${pkg.version}.tgz`;
-      }
-
-      if (typeof constraint === 'function') {
-        ver = constraint(versions);
+      if (d === pkg.name) {
+        ver = cliArgs.ci
+          ? // this is how `npm pack` will name the tarball
+            `file:./ginterdev-toolkit-${pkg.version}.tgz`
+          : pkg.version;
+      } else if (constraint) {
+        ver = constraint(getVersions(d, true));
+      } else {
+        ver = getLatest(d);
       }
 
       acc[d] = ver;
@@ -325,4 +352,6 @@ const map = {
   };
 
   writeFileSync('package.json', JSON.stringify(pkgJson, null, 2), 'utf-8');
+
+  await createGitignore();
 })();
