@@ -22,6 +22,7 @@ function here(...p) {
 
 const exportRequire = readFileSync(here('export-require'), 'utf-8');
 const exportDefaultEsm = readFileSync(here('export-default-esm'), 'utf-8');
+const nvmrc = readFileSync(here('_nvmrc'), 'utf-8');
 
 function rereq(fn, dest) {
   const c = exportRequire.replace(/__IMPORT_SOURCE__/g, `${pkg.name}/${fn}`);
@@ -30,6 +31,12 @@ function rereq(fn, dest) {
 
 function reexpesm(spec, fn, dest) {
   const c = exportDefaultEsm.replace(/__SPECIFIER__/g, spec);
+  mkdirSync(dirname(dest), { recursive: true });
+  writeFileSync(dest, c, 'utf-8');
+}
+
+function createNvmrc(nodeVer, dest) {
+  const c = nvmrc.replace(/__NODE_VERSION_MAJOR__/g, nodeVer);
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, c, 'utf-8');
 }
@@ -159,7 +166,7 @@ const map = {
   always: ({ nodeVersion, files }) => {
     copy('_gitattributes', '.gitattributes');
     copy('_npmrc', '.npmrc');
-    copy(`nvmrc-${nodeVersion}`, '.nvmrc');
+    createNvmrc(nodeVersion, '.nvmrc');
 
     // those are basic tools that we will have anyway, no option to opt out
     rereq('husky', '.huskyrc.js');
@@ -174,6 +181,7 @@ const map = {
     return {
       deps: ['react', 'react-dom'],
       devDeps: [
+        '@ginterdev/toolkit',
         'eslint-config-prettier',
         'eslint-import-resolver-alias',
         'eslint-plugin-import',
@@ -259,29 +267,6 @@ const map = {
     npmDevDeps.push(...devDeps);
   });
 
-  // const [executable, ...cmdArgs] =
-  //   answers.packager === 'npm'
-  //     ? ['npm', 'add', '--save-exact']
-  //     : ['yarn', 'add', '--exact'];
-
-  // it is not guaranteed that we will have prod deps
-  // if (npmDeps.length > 0) {
-  //   cmdArgs.push(...npmDeps);
-  // }
-
-  // we will always have some dev dependencies
-  // cmdArgs.push(
-  //   answers.packager === 'npm' ? '--save-dev' : '--dev',
-  //   ...npmDevDeps,
-  // );
-
-  // if (cliArgs['dry-run']) {
-  //   process.stdout.write(
-  //     'Skipping dependencies install due to --dry-run flag\n',
-  //   );
-  //   return;
-  // }
-
   // this is crucial, because if we don't have package.json here
   // yarn/npm will install deps in parent dir (this is weird)
   if (!existsSync('package.json')) {
@@ -308,7 +293,7 @@ const map = {
     return deps.reduce((acc, d) => {
       const versions = getVersions(d);
       const constraint = constraints[d];
-      let ver = maxSatisfying(versions, '>=0');
+      let ver = versions[versions.length - 1];
 
       if (typeof constraint === 'function') {
         ver = constraint(versions);
@@ -335,8 +320,4 @@ const map = {
   };
 
   writeFileSync('package.json', JSON.stringify(pkgJson, null, 2), 'utf-8');
-
-  // await execa(executable, [...cmdArgs, ...npmDeps], {
-  //   stdio: 'inherit',
-  // });
 })();
