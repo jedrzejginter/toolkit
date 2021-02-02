@@ -201,10 +201,24 @@ const map = {
     copyReactComp('Input');
     copyReactComp('Spinner');
 
+    const hasReact = files.includes('nextjs');
+    const hasJest = files.includes('jest');
+    const hasTypescript = files.includes('typescript');
+
+    const airbnbConfig = hasTypescript
+      ? 'airbnb-typescript'
+      : hasReact
+      ? 'airbnb'
+      : 'airbnb-base';
+
     return {
-      deps: ['react', 'react-dom'],
+      deps: ['@ginterdev/toolkit', 'react', 'react-dom'],
       devDeps: [
-        '@ginterdev/toolkit',
+        `eslint-config-${airbnbConfig}`,
+        hasReact && 'eslint-plugin-jsx-a11y',
+        hasReact && 'eslint-plugin-react-hooks',
+        hasReact && 'eslint-plugin-react-hooks',
+        hasJest && 'eslint-plugin-jest',
         'eslint-config-prettier',
         'eslint-import-resolver-alias',
         'eslint-plugin-import',
@@ -214,8 +228,8 @@ const map = {
         'lint-staged',
         'prettier',
         'prettier-plugin-package',
-        files.includes('typescript') && '@types/react',
-        files.includes('typescript') && '@types/react-dom',
+        hasTypescript && hasReact && '@types/react',
+        hasTypescript && hasReact && '@types/react-dom',
       ].filter(Boolean),
     };
   },
