@@ -30,9 +30,10 @@ jobs:
       - name: Create project
         working-directory: toolkit-project
         run: |
-          cp ../cli/.gitignore .gitignore
+          cp ../cli/_gitignore-ci .gitignore
           rm -f yarn.lock package.json .*.js *.js .*rc
           rm -rf .github .vscode scripts src
+          touch yarn.lock
           cp ../cli/*.tgz ./
           ../cli/cli.js --ci
           ls -al

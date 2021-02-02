@@ -325,12 +325,4 @@ const map = {
   };
 
   writeFileSync('package.json', JSON.stringify(pkgJson, null, 2), 'utf-8');
-
-  const lockFile =
-    answers.packager === 'npm' ? 'package-lock.json' : 'yarn.lock';
-
-  if (!existsSync(lockFile)) {
-    const lockFileContents = answers.packager === 'npm' ? '{}' : '';
-    writeFileSync(lockFile, lockFileContents, 'utf-8');
-  }
 })();
