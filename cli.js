@@ -42,10 +42,21 @@ function createNvmrc(nodeVer, dest) {
   writeFileSync(dest, c, 'utf-8');
 }
 
-function copy(fn, dest, modifiers = []) {
-  mkdirSync(dirname(dest || fn), { recursive: true });
-  copyFileSync(here(fn), dest || fn);
-  modifiers.forEach((modify) => modify(dest || fn));
+function copy(src, dest, modifiers = []) {
+  mkdirSync(dirname(dest || src), { recursive: true });
+
+  if (modifiers.length === 0) {
+    copyFileSync(here(src), dest || src);
+    return;
+  }
+
+  const contents = readFileSync(here(src), 'utf-8');
+  const finalContents = modifiers.reduce(
+    (acc, modifier) => modifier(acc),
+    contents,
+  );
+
+  writeFileSync(dest || src, finalContents, 'utf-8');
 }
 
 function copyDir(src, dest) {
@@ -79,20 +90,8 @@ function copyReactComp(cname) {
   reexpesm(cname, fn, `src/components/${cname}/index.ts`);
 }
 
-function modifyFileContents(fn, pred) {
-  let contents = readFileSync(fn, 'utf-8');
-  contents = pred(contents);
-  writeFileSync(fn, contents, 'utf-8');
-}
-
-function fixImports(fn) {
-  modifyFileContents(fn, (c) =>
-    c.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`),
-  );
-}
-
-function addNodeVersion(fn, ver) {
-  modifyFileContents(fn, (c) => c.replace(/__NODE_VERSION__/g, ver));
+function fixImports(c) {
+  return c.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`);
 }
 
 function createGitignore() {
@@ -120,10 +119,10 @@ const map = {
 
     return { deps: ['tailwindcss'], devDeps: [] };
   },
-  docker: ({ nodeVersion }) => {
+  docker: ({ fullNodeVersion }) => {
     copy('_dockerignore', '.dockerignore');
     copy('_Dockerfile', 'Dockerfile', [
-      (fn) => addNodeVersion(fn, nodeVersion === '12' ? '12.20.1' : '14.15.4'),
+      (c) => c.replace(/__NODE_VERSION__/g, fullNodeVersion),
     ]);
     copy('scripts/rewrite-pkg-json.js');
 
@@ -150,8 +149,17 @@ const map = {
       ],
     };
   },
-  'gh-actions': () => {
-    copyDir('_github', '.github');
+  'gh-actions': ({ fullNodeVersion }) => {
+    copy('_github/workflows/ci.yml', '.github/workflows/ci.yml', [
+      (c) => c.replace(/__NODE_VERSION__/, fullNodeVersion),
+      (c) =>
+        c.replace(
+          /__CI_BRANCH__/,
+          typeof cliArgs['ci-branch'] === 'string'
+            ? cliArgs['ci-branch']
+            : 'main',
+        ),
+    ]);
     return { deps: [], devDeps: [] };
   },
   vscode: () => {
@@ -276,7 +284,10 @@ const map = {
       return;
     }
 
-    const { deps, devDeps } = exec(answers);
+    const { deps, devDeps } = exec({
+      ...answers,
+      fullNodeVersion: answers.nodeVersion === '12' ? '12.20.1' : '14.15.4',
+    });
 
     npmDeps.push(...deps);
     npmDevDeps.push(...devDeps);

@@ -34,7 +34,7 @@ jobs:
           rm -rf .github .vscode scripts src
           touch yarn.lock
           cp ../cli/*.tgz ./
-          ../cli/cli.js --ci
+          ../cli/cli.js --ci --ci-branch toolkit-project
           ls -al
           cat package.json
           git config user.name "github-actions[bot]"
