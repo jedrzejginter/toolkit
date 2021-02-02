@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: '12.20.1'
       - uses: bahmutov/npm-install@v1
-        working-directory: cli
+        with:
+          working-directory: cli
         env:
           NODE_ENV: production
 
