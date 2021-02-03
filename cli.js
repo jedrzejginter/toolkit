@@ -109,15 +109,19 @@ function createGitignore() {
 }
 
 const map = {
-  tailwind: () => {
+  tailwind: ({ ie11 }) => {
     copy('_tailwind.css', 'src/assets/css/tailwind.css');
     copy('_tailwind.config.js', 'tailwind.config.js', [fixImports]);
     addNpmScript(
       'build:tailwind',
-      `tailwind build src/assets/css/tailwind.css -o public/css/tailwind.out.css`,
+      `tailwind build src/assets/css/tailwind.css --output public/css/tailwind.out.css`,
     );
 
-    return { deps: ['tailwindcss'], devDeps: [] };
+    if (!ie11) {
+      rereq('postcss', 'postcss.config.js');
+    }
+
+    return { deps: ['tailwindcss', 'autoprefixer', 'postcss'], devDeps: [] };
   },
   docker: ({ fullNodeVersion }) => {
     copy('_dockerignore', '.dockerignore');
@@ -170,7 +174,7 @@ const map = {
     copy('_env.example', '.env.example');
     copy('_next.config.js', 'next.config.js', [fixImports]);
     copy('_next-babelrc.js', '.babelrc.js');
-    copyDir('next-pages', 'src/pages');
+    copyDir('next-pages', 'pages');
     copyDir('icons', 'src/assets/icons');
 
     if (files.includes('typescript')) {
@@ -202,6 +206,12 @@ const map = {
     rereq('eslint', '.eslintrc.js');
     rereq('prettier', '.prettierrc.js');
 
+    addNpmScript(
+      'eslint',
+      `eslint --ext '.js,.jsx,.ts,.tsx' --ignore-pattern '!.*.js' --fix`,
+    );
+    addNpmScript('lint', `yarn run eslint .`);
+
     copyReactComp('Checkbox');
     copyReactComp('Input');
     copyReactComp('Spinner');
@@ -217,7 +227,11 @@ const map = {
       : 'airbnb-base';
 
     return {
-      deps: ['@ginterdev/toolkit', 'react', 'react-dom'],
+      deps: [
+        '@ginterdev/toolkit',
+        hasReact && 'react',
+        hasReact && 'react-dom',
+      ].filter(Boolean),
       devDeps: [
         `eslint-config-${airbnbConfig}`,
         hasReact && 'eslint-plugin-jsx-a11y',
