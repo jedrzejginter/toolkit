@@ -10,7 +10,7 @@
     "start": "NODE_ENV=production next start"
   },
   "dependencies": {
-    "@ginterdev/toolkit": "file:./ginterdev-toolkit-0.1.0-rc3.tgz",
+    "@ginterdev/toolkit": "file:./ginterdev-toolkit-0.1.0-rc4.tgz",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "tailwindcss": "1.9.6",
