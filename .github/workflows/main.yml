@@ -21,11 +21,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.20.1'
-      - uses: bahmutov/npm-install@v1
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v1
         with:
-          working-directory: cli
-        env:
-          NODE_ENV: production
+          path: ./cli/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('cli/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
 
       - run: yarn run build
         working-directory: cli
