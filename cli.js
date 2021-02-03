@@ -170,20 +170,25 @@ const map = {
     copy('_env.example', '.env.example');
     copy('_next.config.js', 'next.config.js', [fixImports]);
     copy('_next-babelrc.js', '.babelrc.js');
+    copyDir('next-pages', 'src/pages');
+    copyDir('icons', 'src/assets/icons');
 
     if (files.includes('typescript')) {
-      copy('_env-dts', 'types/env.d.ts');
-      copy('_babel-plugins-dts', 'types/babel-plugins.d.ts');
+      copy('_env-dts', 'dts/env.d.ts');
+      copy('_babel-plugins-dts', 'dts/babel-plugins.d.ts');
     }
 
     addNpmScript('build', 'NODE_ENV=production next build');
     // eslint-disable-next-line no-template-curly-in-string
-    addNpmScript('dev', 'NODE_ENV=development next -p ${PORT:3001}');
+    addNpmScript('dev', 'NODE_ENV=development next -p ${PORT:-3001}');
     addNpmScript('start', 'NODE_ENV=production next start');
 
     return {
       deps: ['envalid', 'next'],
-      devDeps: ['babel-plugin-inline-react-svg'],
+      devDeps: [
+        'babel-plugin-module-resolver',
+        'babel-plugin-inline-react-svg',
+      ],
     };
   },
   always: ({ nodeVersion, files }) => {
@@ -216,7 +221,7 @@ const map = {
       devDeps: [
         `eslint-config-${airbnbConfig}`,
         hasReact && 'eslint-plugin-jsx-a11y',
-        hasReact && 'eslint-plugin-react-hooks',
+        hasReact && 'eslint-plugin-react',
         hasReact && 'eslint-plugin-react-hooks',
         hasJest && 'eslint-plugin-jest',
         'eslint-config-prettier',
@@ -375,6 +380,8 @@ const map = {
     ...versionifyDeps(npmDevDeps),
     ...pkgJson.devDependencies,
   };
+
+  pkgJson.license = pkgJson.license || 'UNLICENSED';
 
   writeFileSync('package.json', JSON.stringify(pkgJson, null, 2), 'utf-8');
 
