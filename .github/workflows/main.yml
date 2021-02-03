@@ -27,13 +27,16 @@ jobs:
         env:
           NODE_ENV: production
 
+      - run: yarn run build
+        working-directory: cli
+
       - run: npm pack
         working-directory: cli
 
       - name: Create project
         working-directory: toolkit-project
         run: |
-          rm -f yarn.lock package.json .*.js *.js .*rc
+          rm -f yarn.lock package.json .*.js *.js .*rc *.tgz
           rm -rf .github .vscode scripts src
           touch yarn.lock
           cp ../cli/*.tgz ./

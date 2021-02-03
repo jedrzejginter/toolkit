@@ -4,15 +4,15 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["esnext"],
-    "module": "commonjs",
+    "lib": ["ESNext"],
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": ".",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es6"
+    "target": "ES6"
   },
   "include": ["cli.ts"],
   "exclude": ["node_modules"]
