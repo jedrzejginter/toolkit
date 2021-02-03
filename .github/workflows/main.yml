@@ -1,7 +1,10 @@
 name: main
 on:
   push:
-    branches: [main, 'feat/packages-versions']
+    branches: [main]
+  pull_request:
+    branches:
+      - '**'
 jobs:
   cli:
     runs-on: ubuntu-latest
@@ -43,4 +46,9 @@ jobs:
           git add --force *.tgz
           git status
           git diff --quiet && git diff --staged --quiet || \
-            git commit -m "Generate project" && git push -f origin toolkit-project
+            git commit -m "Generate project"
+
+      - name: Push commit to generate new project
+        if: github.ref == 'refs/heads/main'
+        working-directory: toolkit-project
+        run: git push -f origin toolkit-project
