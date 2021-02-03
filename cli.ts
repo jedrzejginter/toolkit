@@ -18,6 +18,8 @@ import pkg from './package.json';
 
 const cliArgs = minimist(process.argv.slice(2));
 
+type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
+
 function here(...p: string[]): string {
   return join(__dirname, ...p);
 }
@@ -31,7 +33,7 @@ function rereq(fn: string, dest: string): void {
   writeFileSync(dest, c, 'utf-8');
 }
 
-function reexpesm(spec: string, fn: string, dest: string): void {
+function reexpesm(spec: string, dest: string): void {
   const c = exportDefaultEsm.replace(/__SPECIFIER__/g, spec);
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, c, 'utf-8');
@@ -70,11 +72,11 @@ function copyDir(src: string, dest: string): void {
   });
 }
 
-function copyReactComp(cname: string): void {
+function copyReactComp(cname: ReactComponent): void {
   const fn = `${cname}.tsx`;
 
   copy(join('react-components', fn), `src/components/${cname}/${fn}`);
-  reexpesm(cname, fn, `src/components/${cname}/index.ts`);
+  reexpesm(cname, `src/components/${cname}/index.ts`);
 }
 
 function fixImports(c: string): string {
@@ -96,46 +98,42 @@ function createGitignore(): Promise<void> {
 }
 
 type NpmDep =
-  | 'husky'
-  | 'eslint-config-airbnb-typescript'
-  | 'eslint-config-airbnb'
-  | 'eslint-config-airbnb-base'
-  | 'tailwindcss'
-  | 'autoprefixer'
-  | 'postcss'
-  | 'jest'
-  | 'typescript'
-  | 'react'
-  | 'react-dom'
-  | '@types/react'
-  | '@types/react-dom'
+  | '@ginterdev/toolkit'
   | '@types/node'
+  | '@types/react-dom'
+  | '@types/react'
   | '@typescript-eslint/eslint-plugin'
   | '@typescript-eslint/parser'
-  | 'envalid'
-  | 'next'
-  | 'babel-plugin-module-resolver'
+  | 'autoprefixer'
   | 'babel-plugin-inline-react-svg'
-  | '@ginterdev/toolkit'
-  | 'eslint-plugin-jsx-a11y'
-  | 'eslint-plugin-react'
-  | 'eslint-plugin-react-hooks'
-  | 'eslint-plugin-jest'
+  | 'babel-plugin-module-resolver'
+  | 'envalid'
+  | 'eslint-config-airbnb-base'
+  | 'eslint-config-airbnb-typescript'
+  | 'eslint-config-airbnb'
   | 'eslint-config-prettier'
   | 'eslint-import-resolver-alias'
   | 'eslint-plugin-import'
+  | 'eslint-plugin-jest'
+  | 'eslint-plugin-jsx-a11y'
   | 'eslint-plugin-prettier'
+  | 'eslint-plugin-react-hooks'
+  | 'eslint-plugin-react'
   | 'eslint'
+  | 'husky'
+  | 'jest'
   | 'lint-staged'
+  | 'next'
+  | 'postcss'
+  | 'prettier-plugin-package'
   | 'prettier'
-  | 'prettier-plugin-package';
+  | 'react-dom'
+  | 'react'
+  | 'tailwindcss'
+  | 'typescript';
 
-function isNpmDep(s: any): s is NpmDep {
-  return typeof s === 'string';
-}
-
-function filter(arr: (NpmDep | boolean)[]): NpmDep[] {
-  return arr.filter(isNpmDep);
+function filterFalsy(arr: (NpmDep | boolean)[]): NpmDep[] {
+  return arr.filter((el): el is NpmDep => typeof el === 'string');
 }
 
 type Answers = {
@@ -193,12 +191,12 @@ function commonFeatures({ nodeVersion, files }: Answers): FeatureConfig {
       eslint: `eslint --ext '.js,.jsx,.ts,.tsx' --ignore-pattern '!.*.js'`,
       lint: `yarn run eslint .`,
     },
-    deps: filter([
+    deps: filterFalsy([
       '@ginterdev/toolkit',
       hasReact && 'react',
       hasReact && 'react-dom',
     ]),
-    devDeps: filter([
+    devDeps: filterFalsy([
       airbnbConfig,
       hasReact && 'eslint-plugin-jsx-a11y',
       hasReact && 'eslint-plugin-react',
