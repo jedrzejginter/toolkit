@@ -8,7 +8,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "./lib",
+    "outDir": ".",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
