@@ -14,6 +14,7 @@
     "test": "jest"
   },
   "files": [
+    "_babel-plugins-dts",
     "_Dockerfile",
     "_dockerignore",
     "_env-dts",
@@ -29,6 +30,8 @@
     "_tsconfig.eslint.json",
     "_tsconfig.json",
     "_vscode",
+    "*.d.ts",
+    "cli.js",
     "const.js",
     "eslint.js",
     "export-default-esm",
