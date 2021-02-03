@@ -208,7 +208,7 @@ const map = {
 
     addNpmScript(
       'eslint',
-      `eslint --ext '.js,.jsx,.ts,.tsx' --ignore-pattern '!.*.js' --fix`,
+      `eslint --ext '.js,.jsx,.ts,.tsx' --ignore-pattern '!.*.js'`,
     );
     addNpmScript('lint', `yarn run eslint .`);
 
