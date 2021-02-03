@@ -30,6 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
+      - run: yarn install
+        working-directory: cli
+
       - run: yarn run build
         working-directory: cli
 
