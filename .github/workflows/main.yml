@@ -56,7 +56,7 @@ jobs:
               --typescript \
               --vscode \
               --jest \
-              --no-install
+              --skip-install
           ls -al
           cat package.json
           git config user.name "github-actions[bot]"

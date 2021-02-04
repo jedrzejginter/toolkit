@@ -27,7 +27,7 @@ type CliFlag =
   | 'typescript'
   | 'npm'
   | 'vscode'
-  | 'no-install'
+  | 'skip-install'
   // for testing only
   | 'dangerously-enable-ci-environment'
   | 'dangerously-set-github-ci-branch';
@@ -112,7 +112,7 @@ const metaFeatures: MetaFeatures = {
   tailwindV1: !dropIE11,
   nodeVersion,
   nodeVersionMajor: String(semverMajor(nodeVersion)),
-  noInstall: isExactlyTrue(cliArgs['no-install']),
+  noInstall: isExactlyTrue(cliArgs['skip-install']),
 };
 
 type MergedFeatures = FeaturesArgs & MetaFeatures;
@@ -121,6 +121,8 @@ const mergedFeatures: MergedFeatures = {
   ...metaFeatures,
   ...features,
 };
+
+console.log(cliArgs);
 
 type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
