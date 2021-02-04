@@ -16,7 +16,7 @@
     "node": "^12"
   },
   "dependencies": {
-    "@ginterdev/toolkit": "file:./ginterdev-toolkit-0.1.0-rc6.tgz",
+    "@ginterdev/toolkit": "file:./ginterdev-toolkit-0.1.0-rc7.tgz",
     "autoprefixer": "10.2.4",
     "envalid": "7.0.0",
     "next": "10.0.6",
@@ -26,7 +26,7 @@
     "tailwindcss": "1.9.6"
   },
   "devDependencies": {
-    "@types/node": "14.14.24",
+    "@types/node": "14.14.25",
     "@types/react": "17.0.1",
     "@types/react-dom": "17.0.0",
     "@typescript-eslint/eslint-plugin": "4.14.2",
