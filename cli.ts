@@ -559,7 +559,7 @@ function here(...p: string[]): string {
 
   const tasks = new Listr<ListrContext>([
     {
-      title: 'Create source code files',
+      title: 'Create configuration and source code files',
       task: async () => {
         const featuresResolvers: FeatureResolver[] = [commonFeatures];
         const entries: [Feature, FeatureResolver][] = objectEntries(
@@ -668,6 +668,16 @@ function here(...p: string[]): string {
             stderr: 'inherit',
           },
         );
+      },
+    },
+    {
+      title: 'Organize package.json',
+      enabled: (ctx) => ctx.dependenciesReady === true,
+      skip: () => mergedFeatures.noInstall,
+      task: async () => {
+        await execa('prettier', ['--write', 'package.json'], {
+          stderr: 'inherit',
+        });
       },
     },
   ]);
