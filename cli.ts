@@ -6,6 +6,7 @@ import Listr from 'listr';
 import minimist from 'minimist';
 import fetch from 'node-fetch';
 import { join, dirname, parse } from 'path';
+import semverGte from 'semver/functions/gte';
 import semverMajor from 'semver/functions/major';
 import semverIsValid from 'semver/functions/valid';
 import maxSatisfying from 'semver/ranges/max-satisfying';
@@ -159,6 +160,13 @@ function here(...p: string[]): string {
 }
 
 (async () => {
+  if (!semverGte(process.version, `${mergedFeatures.nodeVersionMajor}.0.0`)) {
+    process.stderr.write(
+      `Incorrect Node version (requires >=${mergedFeatures.nodeVersionMajor}, but now running ${process.version})\n`,
+    );
+    process.exit(2);
+  }
+
   const exportRequire = await readFile(here('export-require'), 'utf-8');
   const exportDefaultEsm = await readFile(here('export-default-esm'), 'utf-8');
   const nvmrc = await readFile(here('_nvmrc'), 'utf-8');
