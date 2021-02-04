@@ -114,3 +114,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# cli is build from .ts file
+cli.js

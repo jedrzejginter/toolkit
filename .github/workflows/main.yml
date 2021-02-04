@@ -21,11 +21,20 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.20.1'
-      - uses: bahmutov/npm-install@v1
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v1
         with:
-          working-directory: cli
-        env:
-          NODE_ENV: production
+          path: ./cli/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('cli/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - run: yarn install
+        working-directory: cli
+
+      - run: yarn run build && chmod +x cli.js
+        working-directory: cli
 
       - run: npm pack
         working-directory: cli
@@ -33,11 +42,21 @@ jobs:
       - name: Create project
         working-directory: toolkit-project
         run: |
-          rm -f yarn.lock package.json .*.js *.js .*rc
+          rm -f yarn.lock package.json .*.js *.js .*rc *.tgz
           rm -rf .github .vscode scripts src
           touch yarn.lock
           cp ../cli/*.tgz ./
-          ../cli/cli.js --ci --ci-branch toolkit-project
+          ../cli/cli.js \
+              --dangerously-enable-ci-environment \
+              --dangerously-set-github-ci-branch toolkit-project \
+              --tailwind \
+              --nextjs \
+              --docker \
+              --github-ci \
+              --typescript \
+              --vscode \
+              --jest \
+              --skip-install
           ls -al
           cat package.json
           git config user.name "github-actions[bot]"

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ESNext"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": ".",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES6"
+  },
+  "include": ["cli.ts"],
+  "exclude": ["node_modules"]
+}
