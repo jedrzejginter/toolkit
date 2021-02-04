@@ -152,8 +152,6 @@ const mergedFeatures: MergedFeatures = {
   ...features,
 };
 
-console.log(cliArgs);
-
 type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
 function here(...p: string[]): string {
