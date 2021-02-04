@@ -16,18 +16,18 @@ import pkg from './package.json';
 const { mkdir, readFile, writeFile, copyFile } = fs;
 
 type CliFlag =
-  | 'tailwind'
-  | 'drop-ie11'
   | 'docker'
-  | 'react'
-  | 'nextjs'
-  | 'jest'
+  | 'drop-ie11'
   | 'github-ci'
+  | 'jest'
+  | 'nextjs'
   | 'node'
-  | 'typescript'
   | 'npm'
-  | 'vscode'
+  | 'react'
   | 'skip-install'
+  | 'tailwind'
+  | 'typescript'
+  | 'vscode'
   // for testing only
   | 'dangerously-enable-ci-environment'
   | 'dangerously-set-github-ci-branch';
