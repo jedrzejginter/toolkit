@@ -35,7 +35,7 @@ type CliFlag =
 const cliFlags: Record<CliFlag, string> = {
   tailwind: '',
   'drop-ie11': '',
-  'no-install': '',
+  'skip-install': '',
   docker: '',
   react: '',
   nextjs: '',
