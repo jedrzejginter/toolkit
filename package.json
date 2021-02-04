@@ -1,6 +1,6 @@
 {
   "name": "@ginterdev/toolkit",
-  "version": "0.1.0-rc5",
+  "version": "0.1.0-rc6",
   "description": "Tools that I use in personal or company projects",
   "license": "MIT",
   "repository": "jedrzejginter/toolkit",
@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext '.js,.jsx' .",
+    "prepare": "npm run build",
     "test": "jest",
     "typecheck": "tsc --noEmit"
   },
