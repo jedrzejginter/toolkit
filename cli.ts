@@ -32,23 +32,6 @@ type CliFlag =
   | 'dangerously-enable-ci-environment'
   | 'dangerously-set-github-ci-branch';
 
-const cliFlags: Record<CliFlag, string> = {
-  tailwind: '',
-  'drop-ie11': '',
-  'no-install': '',
-  docker: '',
-  react: '',
-  nextjs: '',
-  jest: '',
-  'github-ci': '',
-  node: '',
-  typescript: '',
-  npm: '',
-  vscode: '',
-  'dangerously-enable-ci-environment': '',
-  'dangerously-set-github-ci-branch': '',
-};
-
 type CliArgs = Partial<Record<CliFlag, unknown>> & {
   _: any[];
 };
@@ -88,19 +71,6 @@ type MetaFeatures = {
 type Feature = keyof FeaturesArgs;
 
 const cliArgs: CliArgs = minimist(process.argv.slice(2));
-
-// detect unknown cli args - prevents typos
-Object.keys(cliArgs).forEach((cliArg) => {
-  // internal property from 'minimist'
-  if (cliArg === '_') {
-    return;
-  }
-
-  if (!Object.prototype.hasOwnProperty.call(cliFlags, cliArg)) {
-    process.stderr.write(`Unrecognized argument: ${cliArg}\n`);
-    process.exit(1);
-  }
-});
 
 function isStringOrNumber(v: unknown): v is string | number {
   return typeof v === 'string' || typeof v === 'number';
