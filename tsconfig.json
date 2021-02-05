@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES6"
+    "target": "ES6",
+    "typeRoots": ["node_modules/@types", "dts"]
   },
   "include": ["cli.ts"],
   "exclude": ["node_modules"]

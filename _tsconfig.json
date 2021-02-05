@@ -17,8 +17,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es5"
+    "target": "es5",
+    "typeRoots": ["node_modules/@types", "dts"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "**/*.js", "**/.jsx", "dts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/.jsx"],
   "exclude": ["node_modules"]
 }
