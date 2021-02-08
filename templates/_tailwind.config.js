@@ -1,6 +1,6 @@
 const theme = require('tailwindcss/defaultTheme');
 
-const { zIndex } = require('./utils');
+const { zIndex } = require('../utils');
 
 module.exports = {
   future: {

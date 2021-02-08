@@ -155,8 +155,9 @@ const mergedFeatures: MergedFeatures = {
 
 type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
-function here(...p: string[]): string {
-  return join(__dirname, ...p);
+// template dir path maker
+function tdir(...p: string[]): string {
+  return join(__dirname, 'templates', ...p);
 }
 
 (async () => {
@@ -167,9 +168,9 @@ function here(...p: string[]): string {
     process.exit(2);
   }
 
-  const exportRequire = await readFile(here('export-require'), 'utf-8');
-  const exportDefaultEsm = await readFile(here('export-default-esm'), 'utf-8');
-  const nvmrc = await readFile(here('_nvmrc'), 'utf-8');
+  const exportRequire = await readFile(tdir('export-require'), 'utf-8');
+  const exportDefaultEsm = await readFile(tdir('export-default-esm'), 'utf-8');
+  const nvmrc = await readFile(tdir('_nvmrc'), 'utf-8');
 
   async function rereq(fn: string, dest: string): Promise<void> {
     const c = exportRequire.replace(/__IMPORT_SOURCE__/g, `${pkg.name}/${fn}`);
@@ -196,11 +197,11 @@ function here(...p: string[]): string {
     await mkdir(dirname(dest || src), { recursive: true });
 
     if (modifiers.length === 0) {
-      await copyFile(here(src), dest || src);
+      await copyFile(tdir(src), dest || src);
       return;
     }
 
-    const contents = await readFile(here(src), 'utf-8');
+    const contents = await readFile(tdir(src), 'utf-8');
     const finalContents = modifiers.reduce(
       (acc, modifier) => modifier(acc),
       contents,
@@ -211,7 +212,7 @@ function here(...p: string[]): string {
 
   function copyDir(src: string, dest: string): Promise<void> {
     return new Promise((resolve) => {
-      copyfiles([join(here(src), '/*'), dest], { up: true }, () => {
+      copyfiles([join(tdir(src), '/*'), dest], { up: true }, () => {
         resolve();
       });
     });
@@ -220,12 +221,20 @@ function here(...p: string[]): string {
   async function copyReactComp(cname: ReactComponent): Promise<void> {
     const fn = `${cname}.tsx`;
 
-    await copy(join('react-components', fn), `src/components/${cname}/${fn}`);
+    await copy(join('components', fn), `src/components/${cname}/${fn}`);
     await reexpesm(cname, `src/components/${cname}/index.ts`);
   }
 
   function fixImports(c: string): string {
-    return c.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`);
+    // require('./utils') -> require('@ginterdev/toolkit/utils')
+    // require("./utils") -> require("@ginterdev/toolkit/utils")
+    // require('../utils') -> require('@ginterdev/toolkit/utils')
+    // require('./../utils') -> require('@ginterdev/toolkit/utils')
+    // require('../../utils') -> require('@ginterdev/toolkit/utils')
+    return c.replace(
+      /require\((['"])\.{1,2}\/(\.\.\/)*/g,
+      `require($1${pkg.name}/`,
+    );
   }
 
   async function createGitignore(): Promise<void> {
@@ -404,7 +413,7 @@ function here(...p: string[]): string {
       };
     },
     githubCI: async (feat) => {
-      await copy('_github/workflows/ci.yml', '.github/workflows/ci.yml', [
+      await copy('github/workflows/ci.yml', '.github/workflows/ci.yml', [
         (c) => c.replace(/__NODE_VERSION__/, feat.nodeVersion),
         (c) =>
           c.replace(
@@ -417,16 +426,16 @@ function here(...p: string[]): string {
       return { scripts: {}, deps: [], devDeps: [] };
     },
     vscode: async () => {
-      await copyDir('_vscode', '.vscode');
+      await copyDir('vscode', '.vscode');
       return { scripts: {}, deps: [], devDeps: [] };
     },
     nextjs: async (feat) => {
       await Promise.all([
-        copy('_env.example', '.env.example'),
-        copy('_env.example', '.env'),
+        copy('_env-example', '.env.example'),
+        copy('_env-example', '.env'),
         copy('_next.config.js', 'next.config.js', [fixImports]),
         copy('_next-babelrc.js', '.babelrc.js'),
-        copyDir('next-pages', 'pages'),
+        copyDir('pages', 'pages'),
         copyDir('icons', 'src/assets/icons'),
       ]);
 
