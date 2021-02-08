@@ -156,7 +156,7 @@ const mergedFeatures: MergedFeatures = {
 type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
 function here(...p: string[]): string {
-  return join(__dirname, ...p);
+  return join(__dirname, 'templates', ...p);
 }
 
 (async () => {
@@ -220,12 +220,15 @@ function here(...p: string[]): string {
   async function copyReactComp(cname: ReactComponent): Promise<void> {
     const fn = `${cname}.tsx`;
 
-    await copy(join('react-components', fn), `src/components/${cname}/${fn}`);
+    await copy(join('components', fn), `src/components/${cname}/${fn}`);
     await reexpesm(cname, `src/components/${cname}/index.ts`);
   }
 
   function fixImports(c: string): string {
-    return c.replace(/(require\(['"]).(\/)/g, `$1${pkg.name}$2`);
+    return c.replace(
+      /require\((['"])(\.\/)?(\.{2}\/)*/g,
+      `require($1${pkg.name}/`,
+    );
   }
 
   async function createGitignore(): Promise<void> {
@@ -404,7 +407,7 @@ function here(...p: string[]): string {
       };
     },
     githubCI: async (feat) => {
-      await copy('_github/workflows/ci.yml', '.github/workflows/ci.yml', [
+      await copy('github/workflows/ci.yml', '.github/workflows/ci.yml', [
         (c) => c.replace(/__NODE_VERSION__/, feat.nodeVersion),
         (c) =>
           c.replace(
@@ -417,16 +420,16 @@ function here(...p: string[]): string {
       return { scripts: {}, deps: [], devDeps: [] };
     },
     vscode: async () => {
-      await copyDir('_vscode', '.vscode');
+      await copyDir('vscode', '.vscode');
       return { scripts: {}, deps: [], devDeps: [] };
     },
     nextjs: async (feat) => {
       await Promise.all([
-        copy('_env.example', '.env.example'),
-        copy('_env.example', '.env'),
+        copy('_env-example', '.env.example'),
+        copy('_env-example', '.env'),
         copy('_next.config.js', 'next.config.js', [fixImports]),
         copy('_next-babelrc.js', '.babelrc.js'),
-        copyDir('next-pages', 'pages'),
+        copyDir('pages', 'pages'),
         copyDir('icons', 'src/assets/icons'),
       ]);
 

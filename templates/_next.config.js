@@ -1,6 +1,6 @@
 const envalid = require('envalid');
 
-const { filterEnv } = require('./utils');
+const { filterEnv } = require('../utils');
 
 // This requires `.env` file to always exists when running Next.js
 const env = envalid.cleanEnv(process.env, {
