@@ -232,7 +232,7 @@ function tdir(...p: string[]): string {
     // require('./../utils') -> require('@ginterdev/toolkit/utils')
     // require('../../utils') -> require('@ginterdev/toolkit/utils')
     return c.replace(
-      /require\((['"])(\.\/)?(\.{2}\/)*/g,
+      /require\((['"])\.{1,2}\/(\.\.\/)*/g,
       `require($1${pkg.name}/`,
     );
   }
