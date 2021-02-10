@@ -440,7 +440,7 @@ function tdir(...p: string[]): string {
       ]);
 
       if (feat.typescript) {
-        copy('_env-dts', 'dts/env.d.ts');
+        copy('_types-dts', 'types.d.ts');
         copy('_babel-plugins-dts', 'dts/babel-plugins.d.ts');
       }
 
