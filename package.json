@@ -29,6 +29,7 @@
     "prettier.js",
     "scripts",
     "templates",
+    "tsconfig-gen.js",
     "utils.js"
   ],
   "peerDependencies": {
@@ -52,6 +53,9 @@
     "semver": "^7.3"
   },
   "devDependencies": {
+    "@babel/core": "7.12.13",
+    "@babel/preset-env": "7.12.13",
+    "@babel/preset-typescript": "7.12.13",
     "@types/copyfiles": "2.4.0",
     "@types/inquirer": "7.3.1",
     "@types/listr": "0.14.2",

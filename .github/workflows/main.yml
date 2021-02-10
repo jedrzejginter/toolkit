@@ -33,6 +33,9 @@ jobs:
       - run: yarn install
         working-directory: cli
 
+      - run: yarn run test
+        working-directory: cli
+
       - run: yarn run build && chmod +x cli.js
         working-directory: cli
 

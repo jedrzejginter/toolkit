@@ -16,6 +16,6 @@
     "target": "ES6",
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["cli.ts"],
+  "include": ["*.ts"],
   "exclude": ["node_modules"]
 }
