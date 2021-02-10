@@ -8,12 +8,13 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
     "outDir": ".",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES6",
-    "typeRoots": ["node_modules/@types", "dts"]
+    "typeRoots": ["node_modules/@types"]
   },
   "include": ["cli.ts"],
   "exclude": ["node_modules"]

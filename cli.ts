@@ -12,6 +12,7 @@ import semverIsValid from 'semver/functions/valid';
 import maxSatisfying from 'semver/ranges/max-satisfying';
 import type { PackageJson } from 'type-fest';
 
+import options from './options';
 import pkg from './package.json';
 
 const { mkdir, readFile, writeFile, copyFile } = fs;
@@ -123,12 +124,16 @@ if (isStringOrNumber(cliArgs.node) && !semverIsValid(String(cliArgs.node))) {
 const dropIE11: boolean = isExactlyTrue(cliArgs['drop-ie11']);
 
 const features: FeaturesArgs = {
-  react: isExactlyTrue(cliArgs.nextjs) || isExactlyTrue(cliArgs.react),
-  nextjs: isExactlyTrue(cliArgs.nextjs),
-  tailwind: isExactlyTrue(cliArgs.tailwind),
+  react:
+    isExactlyTrue(cliArgs.nextjs) ||
+    isExactlyTrue(cliArgs.react) ||
+    options.hasReact,
+  nextjs: isExactlyTrue(cliArgs.nextjs) || options.hasNext,
+  tailwind: isExactlyTrue(cliArgs.tailwind) || options.hasTailwind,
   docker: isExactlyTrue(cliArgs.docker),
-  jest: isExactlyTrue(cliArgs.jest),
-  typescript: isExactlyTrue(cliArgs.typescript),
+  jest:
+    isExactlyTrue(cliArgs.jest) || options.hasJest || options.hasTestingLibrary,
+  typescript: isExactlyTrue(cliArgs.typescript) || options.hasTypescript,
   githubCI: isExactlyTrue(cliArgs['github-ci']),
   vscode: isExactlyTrue(cliArgs.vscode),
 };
@@ -157,7 +162,7 @@ type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
 // template dir path maker
 function tdir(...p: string[]): string {
-  return join(__dirname, 'templates', ...p);
+  return join(__dirname, '../templates', ...p);
 }
 
 (async () => {
@@ -356,8 +361,8 @@ function tdir(...p: string[]): string {
           'eslint-plugin-jsx-a11y',
           'eslint-plugin-react',
           'eslint-plugin-react-hooks',
-          feat.typescript && '@types/react',
-          feat.typescript && '@types/react-dom',
+          feat.typescript ? '@types/react' : false,
+          feat.typescript ? '@types/react-dom' : false,
         ]),
       };
     },
@@ -546,7 +551,7 @@ function tdir(...p: string[]): string {
     return resolvedDependencies.reduce(
       (list, [dependency, version]) => ({
         ...list,
-        [dependency]: version,
+        [String(dependency)]: version,
       }),
       {},
     );
