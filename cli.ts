@@ -162,7 +162,7 @@ type ReactComponent = 'Checkbox' | 'Input' | 'Spinner';
 
 // template dir path maker
 function tdir(...p: string[]): string {
-  return join(__dirname, '../templates', ...p);
+  return join(__dirname, 'templates', ...p);
 }
 
 (async () => {
