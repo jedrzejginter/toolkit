@@ -1,18 +1,16 @@
 const { existsSync } = require('fs');
 const readPkgUp = require('read-pkg-up');
 
-const { packageJson } = readPkgUp.sync({ normalize: true });
+const readResult = readPkgUp.sync({ normalize: true });
+const packageJson = readResult ? readResult.packageJson : {};
+
+const allDeps = {
+  ...packageJson.dependencies,
+  ...packageJson.devDependencies,
+};
 
 function hasAnyDep(...deps) {
-  return deps.some((dep) =>
-    Object.prototype.hasOwnProperty.call(
-      {
-        ...packageJson.dependencies,
-        ...packageJson.devDependencies,
-      },
-      dep,
-    ),
-  );
+  return deps.some((dep) => Object.prototype.hasOwnProperty.call(allDeps, dep));
 }
 
 module.exports = {
