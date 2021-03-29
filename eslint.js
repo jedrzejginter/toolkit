@@ -89,6 +89,10 @@ const config = {
       ],
     }),
     'default-case': OFF,
+    'import/no-extraneous-dependencies': [
+      ERROR,
+      { devDependencies: ['**/*.spec.*', '**/.*rc.js'] },
+    ],
     'import/order': [
       ERROR,
       {

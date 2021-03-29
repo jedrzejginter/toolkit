@@ -1,1 +1,1 @@
-module.exports = require('./lintstaged-base');
+module.exports = require('./lintstaged');

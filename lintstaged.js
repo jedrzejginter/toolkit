@@ -1,8 +1,7 @@
-const { LINT_STAGED_PACKAGE_JSON } = require('./const');
-const lintStagedBase = require('./lintstaged-base');
+const { LINT_STAGED_PRETTIER, LINT_STAGED_ESLINT } = require('./const');
 
 module.exports = {
-  ...lintStagedBase,
-  [LINT_STAGED_PACKAGE_JSON]: () =>
-    `node ${require.resolve('./scripts/exact-deps.js')}`,
+  [LINT_STAGED_PRETTIER]: 'prettier --write',
+  [LINT_STAGED_ESLINT]:
+    "eslint --ext '.js,.jsx,.ts,.tsx' --ignore-pattern '!.*.js' --fix",
 };

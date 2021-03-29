@@ -22,7 +22,7 @@
     "const.js",
     "eslint.js",
     "husky.js",
-    "lintstaged-base.js",
+    "lintstaged-extras.js",
     "lintstaged.js",
     "options.js",
     "postcss.js",
