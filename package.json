@@ -1,7 +1,7 @@
 {
   "name": "@ginterdev/toolkit",
-  "version": "0.1.0-rc.10",
-  "description": "Tools that I use in personal or company projects",
+  "version": "0.1.0-rc.11",
+  "description": "Complete toolkit for setting up a new project with a single command",
   "license": "MIT",
   "repository": "jedrzejginter/toolkit",
   "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
