@@ -17,9 +17,7 @@ const config = {
     options.hasReact && 'plugin:react-hooks/recommended',
     options.hasTestingLibrary && 'testing-library/recommended',
     options.hasTestingLibrary && options.hasReact && 'testing-library/react',
-    options.hasTypescript && 'prettier/@typescript-eslint',
     'prettier',
-    options.hasReact && 'prettier/react',
   ].filter(Boolean),
   plugins: [
     'prettier',
